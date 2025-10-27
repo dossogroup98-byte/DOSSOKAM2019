@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: dossokam2019
+    env: dotnet
+    buildCommand: dotnet publish -c Release -o output
+    startCommand: cd output && dotnet DOSSOKAM2019.dll
