@@ -50,20 +50,45 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- ✅ BİTİŞ TARİHİ EKLENDİ -->
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label asp-for="Dokumaci1ID" class="form-label">Dokumacı 1 ID</label>
-                                    <input asp-for="Dokumaci1ID" type="number" class="form-control" />
+                                    <label asp-for="BitisTarihi" class="form-label">Bitiş Tarihi</label>
+                                    <input asp-for="BitisTarihi" type="datetime-local" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ✅ DOKUMACI COMBOBOX'LARI EKLENDİ -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Dokumacı 1</label>
+                                    <select asp-for="Dokumaci1ID" class="form-control">
+                                        <option value="">-- Dokumacı Seçin --</option>
+                                        @foreach (var dokumaci in ViewBag.Dokumacilar as List<Dokumaci>)
+                                        {
+                                            <option value="@dokumaci.DokumaciID">@dokumaci.DokumaciAdi</option>
+                                        }
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label asp-for="Dokumaci2ID" class="form-label">Dokumacı 2 ID</label>
-                                    <input asp-for="Dokumaci2ID" type="number" class="form-control" />
+                                    <label class="form-label">Dokumacı 2</label>
+                                    <select asp-for="Dokumaci2ID" class="form-control">
+                                        <option value="">-- Dokumacı Seçin --</option>
+                                        @foreach (var dokumaci in ViewBag.Dokumacilar as List<Dokumaci>)
+                                        {
+                                            <option value="@dokumaci.DokumaciID">@dokumaci.DokumaciAdi</option>
+                                        }
+                                    </select>
                                 </div>
                             </div>
                         </div>
+
                         <div class="form-group mb-3">
                             <label asp-for="Aciklama" class="form-label">Açıklama</label>
                             <textarea asp-for="Aciklama" class="form-control" rows="3"></textarea>
