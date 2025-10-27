@@ -1,0 +1,48 @@
+@model IEnumerable<Kesme>
+@{
+    ViewData["Title"] = "Kesme İşlemleri";
+}
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4>✂️ Kesme İşlemleri</h4>
+            <a href="@Url.Action("Create")" class="btn btn-light">➕ Yeni Kayıt</a>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Sipariş No</th>
+                        <th>Ürün Adı</th>
+                        <th>Başlama Tarihi</th>
+                        <th>Geçen Süre</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.SiparisNo</td>
+                            <td>@item.UrunAdi</td>
+                            <td>@item.BaslamaTarihi?.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>@(item.GecenSure?.ToString("F2") ?? "0") saat</td>
+                            <td>
+                                <form asp-action="Complete" method="post" class="d-inline">
+                                    <input type="hidden" name="id" value="@item.KesmeID" />
+                                    <button type="submit" class="btn btn-success btn-sm">✅ Tamamla</button>
+                                </form>
+                                <form asp-action="Delete" method="post" class="d-inline">
+                                    <input type="hidden" name="id" value="@item.KesmeID" />
+                                    <button type="submit" class="btn btn-danger btn-sm" 
+                                            onclick="return confirm('Bu kaydı silmek istediğinizden emin misiniz?')">🗑️ Sil</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

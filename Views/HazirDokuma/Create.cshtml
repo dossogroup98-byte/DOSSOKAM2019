@@ -1,0 +1,65 @@
+@model HazirDokuma
+@{
+    ViewData["Title"] = "Yeni Hazır Dokuma Kaydı";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>🏭 Yeni Hazır Dokuma Kaydı</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="SiparisNo" class="form-label">Sipariş No *</label>
+                                    <input asp-for="SiparisNo" class="form-control" required />
+                                    <span asp-validation-for="SiparisNo" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="UrunAdi" class="form-label">Ürün Adı *</label>
+                                    <input asp-for="UrunAdi" class="form-control" required />
+                                    <span asp-validation-for="UrunAdi" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="BaslamaTarihi" class="form-label">Başlama Tarihi</label>
+                                    <input asp-for="BaslamaTarihi" type="datetime-local" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="CikanAdet" class="form-label">Çıkan Adet</label>
+                                    <input asp-for="CikanAdet" type="number" class="form-control" min="0" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Aciklama" class="form-label">Açıklama</label>
+                            <textarea asp-for="Aciklama" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success">💾 Kaydet</button>
+                            <a href="@Url.Action("Index")" class="btn btn-secondary">← Listeye Dön</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

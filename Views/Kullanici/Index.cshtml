@@ -1,0 +1,98 @@
+@model List<Kullanici>
+@{
+    ViewData["Title"] = "Kullanıcı Yönetimi";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>👥 Kullanıcı Yönetimi</h2>
+        <a href="@Url.Action("Create")" class="btn btn-success">➕ Yeni Kullanıcı</a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">📋 Kullanıcı Listesi</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Kullanıcı Adı</th>
+                                <th>Ad Soyad</th>
+                                <th>E-posta</th>
+                                <th>Rol</th>
+                                <th>Durum</th>
+                                <th>Kayıt Tarihi</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var kullanici in Model)
+                            {
+                                <tr>
+                                    <td>@kullanici.KullaniciID</td>
+                                    <td>@kullanici.KullaniciAdi</td>
+                                    <td>@kullanici.AdSoyad</td>
+                                    <td>@kullanici.Email</td>
+                                    <td>
+                                        <span class="badge bg-info">@kullanici.Role</span>
+                                    </td>
+                                    <td>
+                                        @if (kullanici.Aktif)
+                                        {
+                                            <span class="badge bg-success">Aktif</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Pasif</span>
+                                        }
+                                    </td>
+                                    <td>@kullanici.KayitTarihi.ToString("dd.MM.yyyy")</td>
+                                    <td>
+                                        <a href="@Url.Action("Edit", new { id = kullanici.KullaniciID })" class="btn btn-warning btn-sm mb-1">✏️ Düzenle</a>
+
+                                        <form method="post" action="@Url.Action("ToggleStatus")" class="d-inline">
+                                            <input type="hidden" name="id" value="@kullanici.KullaniciID" />
+                                            @if (kullanici.Aktif)
+                                            {
+                                                <button type="submit" class="btn btn-secondary btn-sm mb-1" onclick="return confirm('Kullanıcıyı pasif yapmak istediğinizden emin misiniz?')">🚫 Pasif Yap</button>
+                                            }
+                                            else
+                                            {
+                                                <button type="submit" class="btn btn-success btn-sm mb-1" onclick="return confirm('Kullanıcıyı aktif yapmak istediğinizden emin misiniz?')">✅ Aktif Yap</button>
+                                            }
+                                        </form>
+
+                                        <form method="post" action="@Url.Action("Delete")" class="d-inline">
+                                            <input type="hidden" name="id" value="@kullanici.KullaniciID" />
+                                            <button type="submit" class="btn btn-danger btn-sm mb-1" onclick="return confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')">🗑️ Sil</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    📝 Henüz kayıtlı kullanıcı bulunmamaktadır.
+                </div>
+            }
+        </div>
+    </div>
+</div>

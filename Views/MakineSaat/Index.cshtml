@@ -1,0 +1,76 @@
+@model List<MakineSaat>
+@{
+    ViewData["Title"] = "Makine Saat İşlemleri";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>🏭 Makine Saat</h2>
+        <a href="@Url.Action("Create")" class="btn btn-success">➕ Yeni Kayıt</a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <div class="card">
+        <div class="card-header bg-warning">
+            <h5 class="mb-0">🔄 Devam Eden İşler</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Sipariş No</th>
+                                <th>Ürün Adı</th>
+                                <th>Kalan Saat</th>
+                                <th>Miktar</th>
+                                <th>Başlama Tarihi</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.SiparisNo</td>
+                                    <td>@item.UrunAdi</td>
+                                    <td>@item.KalanSaat saat</td>
+                                    <td>@item.SiparisMiktar</td>
+                                    <td>
+                                        @if (item.BaslamaTarihi != DateTime.MinValue)
+                                        {
+                                            @item.BaslamaTarihi.ToString("dd/MM/yyyy HH:mm")
+                                        }
+                                        else
+                                        {
+                                            @:"-"
+                                        }
+                                    </td>
+                                    <td>
+                                        <form asp-action="Complete" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@item.MakineSaatID" />
+                                            <button type="submit" class="btn btn-success btn-sm">Complete</button>
+                                        </form>
+                                        <form method="post" action="@Url.Action("Delete")" class="d-inline">
+                                            <input type="hidden" name="id" value="@item.MakineSaatID" />
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Silmek istediğinizden emin misiniz?')">🗑️ Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">📝 Henüz kayıtlı makine saati işi bulunmamaktadır.</div>
+            }
+        </div>
+    </div>
+</div>

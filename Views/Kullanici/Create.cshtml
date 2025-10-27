@@ -1,0 +1,48 @@
+@model Kullanici
+@{
+    ViewData["Title"] = "Kullanıcı Ekle";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Kullanıcı Ekle</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Ad Soyad</label>
+                            <input type="text" class="form-control" asp-for="AdSoyad" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Kullanıcı Adı</label>
+                            <input type="text" class="form-control" asp-for="KullaniciAdi" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Şifre</label>
+                            <input type="password" class="form-control" asp-for="Sifre" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Rol</label>
+                            <select class="form-select" asp-for="Role" required>
+                                <option value="Kullanıcı">Kullanıcı</option>
+                                <option value="Yönetici">Yönetici</option>
+                                <option value="Gözlemci">Gözlemci</option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success">Kullanıcı Ekle</button>
+                            <a href="@Url.Action("List", "Account")" class="btn btn-secondary">İptal</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="tr" data-bs-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DOSSOKAM2019</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0d6efd">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="/images/icon-192.png">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/icon-192.png">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        /* Mobile Optimizations */
+        @@media (max-width: 768px) {
+            .container-fluid {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+            .btn-group .btn {
+                font-size: 0.8rem;
+                padding: 0.375rem 0.5rem;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
+
+            .table-responsive {
+                font-size: 0.875rem;
+            }
+
+            .fs-4 {
+                font-size: 1.25rem !important;
+            }
+
+            .fs-1 {
+                font-size: 2rem !important;
+            }
+
+            .btn-group-vertical-mobile {
+                display: flex;
+                flex-direction: column;
+            }
+
+                .btn-group-vertical-mobile .btn {
+                    margin-bottom: 0.25rem;
+                    text-align: center;
+                }
+        }
+
+        @@media (max-width: 576px) {
+            .col-sm-6 {
+                flex: 0 0 auto;
+                width: 100%;
+            }
+
+            .alert h4 {
+                font-size: 1.1rem;
+            }
+
+            .card-header h5 {
+                font-size: 1rem;
+            }
+
+            .table-responsive {
+                border: 1px solid #dee2e6;
+            }
+
+            .table th, .table td {
+                white-space: nowrap;
+                padding: 0.5rem;
+            }
+        }
+
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,.1);
+        }
+
+        .btn, .form-control, .form-select {
+            min-height: 44px;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .card {
+            transition: transform 0.2s ease-in-out;
+        }
+
+            .card:hover {
+                transform: translateY(-2px);
+            }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="@Url.Action("Index", "Home")">
+                🏭 DOSSO GROUP
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "Home")">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+
+                    @if (Context.Session.GetString("Role") != "Gözlemci")
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Index", "Rapor")">
+                                <i class="bi bi-graph-up"></i> Raporlar
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                <i class="bi bi-gear"></i> Yönetim
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="@Url.Action("Index", "MakineSaat")">Makine Saat</a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("Index", "Ekleme")">Ekleme</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="@Url.Action("Index", "Dazmal")">Dazmal</a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("Index", "Kesme")">Kesme</a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("Index", "Paketleme")">Paketleme</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="@Url.Action("Index", "HazirDokuma")">Hazır Dokuma</a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("Index", "HazirMatbaa")">Hazır Matbaa</a></li>
+                            </ul>
+                        </li>
+                    }
+
+                    @if (Context.Session.GetString("Role") == "Yönetici")
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Create", "Account")">
+                                <i class="bi bi-person-plus"></i> Kullanıcı Ekle
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("List", "Account")">
+                                <i class="bi bi-people"></i> Kullanıcı Listesi
+                            </a>
+                        </li>
+                    }
+                </ul>
+
+                <ul class="navbar-nav">
+                    <!-- PWA Install Button - NAVBAR'DA -->
+                    <li class="nav-item">
+                        <button id="installBtn" class="btn btn-outline-light btn-sm mx-2" style="display: none;">
+                            <i class="bi bi-download"></i> Uygulamayı Yükle
+                        </button>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i>
+                            @Context.Session.GetString("AdSoyad") ?? "Kullanıcı"
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <span class="dropdown-item-text">
+                                    <small>@Context.Session.GetString("Role") ?? "Rol"</small>
+                                </span>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("Logout", "Account")">
+                                    <i class="bi bi-box-arrow-right"></i> Çıkış Yap
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container-fluid py-3">
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-light border-top mt-5">
+        <div class="container-fluid py-3">
+            <div class="row">
+                <div class="col-md-6">
+                    <small class="text-muted">
+                        &copy; 2024 DOSSOKAM - Üretim Takip Sistemi
+                    </small>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <small class="text-muted">
+                        Son Güncelleme: @DateTime.Now.ToString("dd.MM.yyyy HH:mm")
+                    </small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap & jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- PWA Script -->
+    <script>
+        // GÜVENLİ PWA
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'block';
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    installBtn.style.display = 'none';
+                }
+                deferredPrompt = null;
+            }
+        });
+
+        // Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .catch(err => console.log('SW error:', err));
+        }
+    </script>
+
+    <!-- Mobile Enhancements -->
+    <script>
+        $(document).ready(function() {
+            if (window.innerWidth < 768) {
+                $('.dropdown-menu a').on('click', function() {
+                    $('.dropdown-menu').removeClass('show');
+                });
+            }
+
+            $('.table-responsive').on('touchstart', function() {
+                $(this).addClass('scrolling');
+            }).on('touchend', function() {
+                setTimeout(() => $(this).removeClass('scrolling'), 500);
+            });
+
+            $('input, select, textarea').on('focus', function() {
+                if (window.innerWidth < 768) {
+                    setTimeout(() => {
+                        this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 300);
+                }
+            });
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
