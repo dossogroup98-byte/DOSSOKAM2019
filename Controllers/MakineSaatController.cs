@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -25,6 +25,8 @@ public class MakineSaatController : Controller
     // GET: Yeni Kayıt Formu
     public IActionResult Create()
     {
+        // ✅ DOKUMACILARI VIEWBAG'E EKLE
+        ViewBag.Dokumacilar = _context.Dokumacilar.Where(d => d.Aktif).ToList();
         return View();
     }
 
@@ -41,6 +43,9 @@ public class MakineSaatController : Controller
             TempData["Success"] = "Makine Saat kaydı başarıyla eklendi!";
             return RedirectToAction(nameof(Index));
         }
+
+        // ✅ FORM HATALIYSA DOKUMACILARI TEKRAR YÜKLE
+        ViewBag.Dokumacilar = _context.Dokumacilar.Where(d => d.Aktif).ToList();
         return View(makineSaat);
     }
 
@@ -77,8 +82,6 @@ public class MakineSaatController : Controller
             await _context.SaveChangesAsync();
 
             TempData["Success"] = $"{makineSaat.SiparisNo} Ekleme'ye taşındı ve listeden kaldırıldı!";
-
-            // Ekleme sayfasına YÖNLENDİRME YOK - aynı sayfada kal
             return RedirectToAction(nameof(Index));
         }
         catch (Exception ex)
@@ -87,43 +90,6 @@ public class MakineSaatController : Controller
             return RedirectToAction(nameof(Index));
         }
     }
-
-    //public async Task<IActionResult> Complete(int id)
-    //{
-    //    try
-    //    {
-    //        var makineSaat = await _context.MakineSaat.FindAsync(id);
-    //        if (makineSaat != null)
-    //        {
-    //            // 1. MakineSaat'i tamamlandı olarak işaretle
-    //            makineSaat.Tamamlandi = true;
-    //            makineSaat.BitisTarihi = DateTime.Now;
-
-    //            // 2. Ekleme tablosuna yeni kayıt oluştur (SADECE TEMEL ALANLAR)
-    //            var yeniEkleme = new Ekleme
-    //            {
-    //                SiparisNo = makineSaat.SiparisNo,
-    //                UrunAdi = makineSaat.LtunAd ?? "Ürün Adı Yok",
-    //                BaslamaTarihi = DateTime.Now,
-    //                Aciklama = $"{makineSaat.SiparisNo} kaydından transfer edildi",
-    //                Tamamlandi = false,
-    //                KayitTarihi = DateTime.Now
-    //            };
-
-    //            _context.Ekleme.Add(yeniEkleme);
-    //            await _context.SaveChangesAsync();
-
-    //            TempData["Success"] = $"{makineSaat.SiparisNo} tamamlandı ve Ekleme'ye taşındı!";
-    //            return RedirectToAction("Index", "Ekleme");
-    //        }
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        TempData["Error"] = $"Tamamlama işleminde hata: {ex.Message}";
-    //    }
-
-    //    return RedirectToAction(nameof(Index));
-    //}
 
     // POST: Silme İşlemi
     [HttpPost]
