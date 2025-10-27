@@ -1,0 +1,39 @@
+@model Dokumaci
+
+@{
+    ViewData["Title"] = "Dokumacı Sil";
+}
+
+<div class="container">
+    <h1>Dokumacı Sil</h1>
+    
+    <h3>Bu dokumacıyı silmek istediğinizden emin misiniz?</h3>
+    <div>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">ID:</dt>
+            <dd class="col-sm-10">@Model.DokumaciID</dd>
+            
+            <dt class="col-sm-2">Dokumacı Adı:</dt>
+            <dd class="col-sm-10">@Model.DokumaciAdi</dd>
+            
+            <dt class="col-sm-2">Telefon:</dt>
+            <dd class="col-sm-10">@Model.Telefon</dd>
+            
+            <dt class="col-sm-2">Adres:</dt>
+            <dd class="col-sm-10">@Model.Adres</dd>
+            
+            <dt class="col-sm-2">Aktif:</dt>
+            <dd class="col-sm-10">@(Model.Aktif ? "Evet" : "Hayır")</dd>
+            
+            <dt class="col-sm-2">Kayıt Tarihi:</dt>
+            <dd class="col-sm-10">@Model.KayitTarihi.ToString("dd.MM.yyyy")</dd>
+        </dl>
+        
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="DokumaciID" />
+            <input type="submit" value="Sil" class="btn btn-danger" />
+            <a asp-action="Index" class="btn btn-secondary">İptal</a>
+        </form>
+    </div>
+</div>
