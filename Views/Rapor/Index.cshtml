@@ -1,0 +1,123 @@
+@{
+    ViewData["Title"] = "Raporlar";
+}
+
+<div class="container-fluid">
+    <!-- DATABASE SWITCHER - YENİ EKLENDİ -->
+    <div class="card mb-3">
+        <div class="card-body py-2">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-2 mb-md-0">
+                    <small class="text-muted">🗃️ Aktif Veritabanı:</small>
+                    <strong class="text-primary">@(ViewBag.SelectedDatabase == "postgresql" ? "PostgreSQL" : "SQL Server")</strong>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <form method="post" action="@Url.Action("SwitchDatabase", "Rapor")" class="d-inline">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="submit" name="database" value="sqlserver"
+                                    class="btn @(ViewBag.SelectedDatabase == "sqlserver" ? "btn-primary" : "btn-outline-primary")">
+                                📊 SQL Server
+                            </button>
+                            <button type="submit" name="database" value="postgresql"
+                                    class="btn @(ViewBag.SelectedDatabase == "postgresql" ? "btn-success" : "btn-outline-success")">
+                                🐘 PostgreSQL
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>📈 Üretim Raporları</h2>
+            <p class="text-muted">Aktif veritabanından alınan raporlar: <strong>@(ViewBag.SelectedDatabase == "postgresql" ? "PostgreSQL" : "SQL Server")</strong></p>
+        </div>
+    </div>
+
+    <!-- Hızlı Rapor Butonları -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">📅 Haftalık Rapor</h5>
+                    <p class="card-text">Son 7 günün üretim raporu</p>
+                    <a href="@Url.Action("HaftalikRapor", "Rapor", new { database = ViewBag.SelectedDatabase })" class="btn btn-primary">
+                        📊 Raporu Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">📊 Aylık Rapor</h5>
+                    <p class="card-text">Bu ayın üretim raporu</p>
+                    <a href="@Url.Action("AylikRapor", "Rapor", new { database = ViewBag.SelectedDatabase })" class="btn btn-success">
+                        📈 Raporu Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">🎯 Özel Rapor</h5>
+                    <p class="card-text">Özel tarih aralığı raporu</p>
+                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#ozelRaporModal">
+                        ⚙️ Rapor Oluştur
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Veritabanı Bilgisi -->
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-light">
+                <h6>ℹ️ Rapor Bilgisi:</h6>
+                <p class="mb-0">
+                    Raporlar <strong>@(ViewBag.SelectedDatabase == "postgresql" ? "PostgreSQL" : "SQL Server")</strong> veritabanından alınmaktadır.
+                    Veritabanı değiştirmek için üstteki butonları kullanabilirsiniz.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Özel Rapor Modal -->
+<div class="modal fade" id="ozelRaporModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">🎯 Özel Tarih Aralığı Raporu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-action="OzelRapor">
+                <input type="hidden" name="database" value="@ViewBag.SelectedDatabase" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">📅 Başlangıç Tarihi</label>
+                        <input type="date" name="baslangicTarihi" class="form-control" required
+                               max="@DateTime.Now.ToString("yyyy-MM-dd")">
+                        <small class="text-muted">Raporun başlangıç tarihi</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">📅 Bitiş Tarihi</label>
+                        <input type="date" name="bitisTarihi" class="form-control" required
+                               max="@DateTime.Now.ToString("yyyy-MM-dd")">
+                        <small class="text-muted">Raporun bitiş tarihi</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">❌ İptal</button>
+                    <button type="submit" class="btn btn-primary">📊 Rapor Oluştur</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

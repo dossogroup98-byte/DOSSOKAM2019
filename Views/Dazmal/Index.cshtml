@@ -1,0 +1,95 @@
+@model List<Dazmal>
+@{
+    ViewData["Title"] = "Dazmal İşlemleri";
+}
+
+<div class="container-fluid">
+    <!-- DATABASE SWITCHER - YENİ EKLENDİ -->
+    <div class="card mb-3">
+        <div class="card-body py-2">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-2 mb-md-0">
+                    <small class="text-muted">🗃️ Aktif Veritabanı:</small>
+                    <strong class="text-primary">@(ViewBag.SelectedDatabase == "postgresql" ? "PostgreSQL" : "SQL Server")</strong>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <form method="post" action="@Url.Action("SwitchDatabase", "Dazmal")" class="d-inline">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="submit" name="database" value="sqlserver"
+                                    class="btn @(ViewBag.SelectedDatabase == "sqlserver" ? "btn-primary" : "btn-outline-primary")">
+                                📊 SQL Server
+                            </button>
+                            <button type="submit" name="database" value="postgresql"
+                                    class="btn @(ViewBag.SelectedDatabase == "postgresql" ? "btn-success" : "btn-outline-success")">
+                                🐘 PostgreSQL
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MEVCUT KODLARINIZ - AYNI KALDI -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>⚡ Dazmal</h2>
+        <div>
+            <a href="@Url.Action("Create", new { database = ViewBag.SelectedDatabase })" class="btn btn-success">➕ ADD</a>
+            <a href="@Url.Action("Clear", new { database = ViewBag.SelectedDatabase })" class="btn btn-warning" onclick="return confirm('Tüm tamamlanmış kayıtlar silinecek. Emin misiniz?')">🗑️ CLEAR</a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">🔄 Devam Eden Dazmal İşleri</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Sipariş No</th>
+                                <th>Ürün Adı</th>
+                                <th>Başlama Tarihi</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.SiparisNo</td>
+                                    <td>@item.UrunAdi</td>
+                                    <td>@item.BaslamaTarihi?.ToString("dd.MM.yyyy HH:mm")</td>
+                                    <td>
+                                        <form method="post" action="@Url.Action("Complete")" class="d-inline">
+                                            <input type="hidden" name="id" value="@item.DazmalID" />
+                                            <input type="hidden" name="database" value="@ViewBag.SelectedDatabase" />
+                                            <button type="submit" class="btn btn-success btn-sm">✅ Completed</button>
+                                        </form>
+                                        <form method="post" action="@Url.Action("Delete")" class="d-inline">
+                                            <input type="hidden" name="id" value="@item.DazmalID" />
+                                            <input type="hidden" name="database" value="@ViewBag.SelectedDatabase" />
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Silmek istediğinizden emin misiniz?')">🗑️ Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">📝 Henüz kayıtlı dazmal işi bulunmamaktadır.</div>
+            }
+        </div>
+    </div>
+</div>

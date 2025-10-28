@@ -1,0 +1,94 @@
+@model List<Dokumaci>
+
+@{
+    ViewData["Title"] = "Dokumacılar";
+}
+
+<div class="container">
+    <!-- DATABASE SWITCHER -->
+    <div class="card mb-3">
+        <div class="card-body py-2">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-2 mb-md-0">
+                    <small class="text-muted">🗃️ Aktif Veritabanı:</small>
+                    <strong class="text-primary">@(ViewBag.SelectedDatabase == "postgresql" ? "PostgreSQL" : "SQL Server")</strong>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <form method="post" action="@Url.Action("SwitchDatabase", "Dokumaci")" class="d-inline">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="submit" name="database" value="sqlserver"
+                                    class="btn @(ViewBag.SelectedDatabase == "sqlserver" ? "btn-primary" : "btn-outline-primary")">
+                                📊 SQL Server
+                            </button>
+                            <button type="submit" name="database" value="postgresql"
+                                    class="btn @(ViewBag.SelectedDatabase == "postgresql" ? "btn-success" : "btn-outline-success")">
+                                🐘 PostgreSQL
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h1>👨‍🏭 Dokumacılar</h1>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <p>
+        <a asp-action="Create" asp-route-database="@ViewBag.SelectedDatabase" class="btn btn-success">➕ Yeni Dokumacı Ekle</a>
+    </p>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Dokumacı Adı</th>
+                    <th>Telefon</th>
+                    <th>Adres</th>
+                    <th>Aktif</th>
+                    <th>Kayıt Tarihi</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.DokumaciID</td>
+                        <td><strong>@item.DokumaciAdi</strong></td>
+                        <td>@(string.IsNullOrEmpty(item.Telefon) ? "-" : item.Telefon)</td>
+                        <td>@(string.IsNullOrEmpty(item.Adres) ? "-" : item.Adres)</td>
+                        <td>
+                            @if (item.Aktif)
+                            {
+                                <span class="badge bg-success">Aktif</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Pasif</span>
+                            }
+                        </td>
+                        <td>@item.KayitTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.DokumaciID" asp-route-database="@ViewBag.SelectedDatabase" class="btn btn-warning btn-sm">✏️ Düzenle</a>
+                            <a asp-action="Delete" asp-route-id="@item.DokumaciID" asp-route-database="@ViewBag.SelectedDatabase" class="btn btn-danger btn-sm">🗑️ Sil</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            <h5>📝 Henüz kayıtlı dokumacı bulunmamaktadır</h5>
+            <p>Yeni dokumacı eklemek için "Yeni Dokumacı Ekle" butonuna tıklayın.</p>
+        </div>
+    }
+</div>

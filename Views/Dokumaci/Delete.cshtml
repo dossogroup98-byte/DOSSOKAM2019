@@ -1,0 +1,98 @@
+@model Dokumaci
+@{
+    ViewData["Title"] = "Dokumacı Sil";
+}
+
+<div class="container-fluid">
+    <!-- DATABASE SWITCHER - YENİ EKLENDİ -->
+    <div class="card mb-3">
+        <div class="card-body py-2">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-2 mb-md-0">
+                    <small class="text-muted">🗃️ Aktif Veritabanı:</small>
+                    <strong class="text-primary">@(ViewBag.SelectedDatabase == "postgresql" ? "PostgreSQL" : "SQL Server")</strong>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <form method="post" action="@Url.Action("SwitchDatabase", "Dokumaci")" class="d-inline">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="submit" name="database" value="sqlserver"
+                                    class="btn @(ViewBag.SelectedDatabase == "sqlserver" ? "btn-primary" : "btn-outline-primary")">
+                                📊 SQL Server
+                            </button>
+                            <button type="submit" name="database" value="postgresql"
+                                    class="btn @(ViewBag.SelectedDatabase == "postgresql" ? "btn-success" : "btn-outline-success")">
+                                🐘 PostgreSQL
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">🗑️ Dokumacı Sil</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h5>⚠️ Bu dokumacıyı silmek istediğinizden emin misiniz?</h5>
+                        <p class="mb-0">Bu işlem geri alınamaz!</p>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">🆔 ID:</dt>
+                                <dd class="col-sm-8"><strong>@Model.DokumaciID</strong></dd>
+
+                                <dt class="col-sm-4">👤 Adı:</dt>
+                                <dd class="col-sm-8"><strong>@Model.DokumaciAdi</strong></dd>
+
+                                <dt class="col-sm-4">📞 Telefon:</dt>
+                                <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.Telefon) ? "-" : Model.Telefon)</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">🏠 Adres:</dt>
+                                <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.Adres) ? "-" : Model.Adres)</dd>
+
+                                <dt class="col-sm-4">📊 Durum:</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.Aktif)
+                                    {
+                                        <span class="badge bg-success">🟢 Aktif</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">🔴 Pasif</span>
+                                    }
+                                </dd>
+
+                                <dt class="col-sm-4">📅 Kayıt Tarihi:</dt>
+                                <dd class="col-sm-8">@Model.KayitTarihi.ToString("dd.MM.yyyy HH:mm")</dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="DokumaciID" />
+                        <input type="hidden" name="database" value="@ViewBag.SelectedDatabase" />
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> 🗑️ Sil
+                            </button>
+                            <a href="@Url.Action("Index", new { database = ViewBag.SelectedDatabase })" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> ← İptal
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

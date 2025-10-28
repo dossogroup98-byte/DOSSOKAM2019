@@ -1,0 +1,113 @@
+@model IEnumerable<HazirMatbaa>
+@{
+    ViewData["Title"] = "Hazır Matbaa";
+}
+
+<div class="container-fluid">
+    <!-- DATABASE SWITCHER - YENİ EKLENDİ -->
+    <div class="card mb-3">
+        <div class="card-body py-2">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-2 mb-md-0">
+                    <small class="text-muted">🗃️ Aktif Veritabanı:</small>
+                    <strong class="text-primary">@(ViewBag.SelectedDatabase == "postgresql" ? "PostgreSQL" : "SQL Server")</strong>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <form method="post" action="@Url.Action("SwitchDatabase", "HazirMatbaa")" class="d-inline">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="submit" name="database" value="sqlserver"
+                                    class="btn @(ViewBag.SelectedDatabase == "sqlserver" ? "btn-primary" : "btn-outline-primary")">
+                                📊 SQL Server
+                            </button>
+                            <button type="submit" name="database" value="postgresql"
+                                    class="btn @(ViewBag.SelectedDatabase == "postgresql" ? "btn-success" : "btn-outline-success")">
+                                🐘 PostgreSQL
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">🎨 Hazır Matbaa</h4>
+            <a href="@Url.Action("Create", new { database = ViewBag.SelectedDatabase })" class="btn btn-light">➕ Yeni Kayıt</a>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Sipariş No</th>
+                                <th>Ürün Adı</th>
+                                <th>Çıkan Adet</th>
+                                <th>Kayıt Tarihi</th>
+                                <th>Açıklama</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td><strong>@item.SiparisNo</strong></td>
+                                    <td>@item.UrunAdi</td>
+                                    <td>
+                                        @if (item.CikanAdet.HasValue)
+                                        {
+                                            <span class="badge bg-success">@item.CikanAdet.Value adet</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>@item.KayitTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.Aciklama))
+                                        {
+                                            <small class="text-muted">@item.Aciklama</small>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <form asp-action="Delete" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@item.HazirMatbaaID" />
+                                            <input type="hidden" name="database" value="@ViewBag.SelectedDatabase" />
+                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                    onclick="return confirm('Bu kaydı silmek istediğinizden emin misiniz?')">
+                                                🗑️ Sil
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info text-center">
+                    <h5>📝 Henüz kayıtlı hazır matbaa işi bulunmamaktadır</h5>
+                    <p>Yeni kayıt eklemek için "Yeni Kayıt" butonuna tıklayın.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
