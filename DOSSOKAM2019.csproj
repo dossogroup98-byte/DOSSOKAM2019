@@ -30,9 +30,9 @@
     
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     
-    <!-- ✅ POSTGRESQL - GÜVENLİ VERSİYON -->
-    <PackageReference Include="Npgsql" Version="7.0.6" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.6" />
+    <!-- ✅ POSTGRESQL - .NET 8 UYUMLU -->
+    <PackageReference Include="Npgsql" Version="8.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
   </ItemGroup>
 
 </Project>
