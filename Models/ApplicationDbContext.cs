@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
+namespace DOSSOKAM2019.Models;  // ✅ BU SATIRI EKLE!
+
 public class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
@@ -114,4 +116,5 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.KaydedenKullaniciID).IsRequired(false);
         });
     }
+
 }
