@@ -1,0 +1,11 @@
+**/*.css
+**/*.js
+**/*.html
+**/*.map
+wwwroot/lib/
+wwwroot/css/
+wwwroot/js/
+node_modules/
+.git/
+.DS_Store
+*.tmp
