@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using OfficeOpenXml;
+using Npgsql; // ✅ PostgreSQL için eklendi
 
 // EPPlus lisansı
 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -17,9 +18,9 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// SQL Server Connection
+// ✅ POSTGRESQL CONNECTION - DEĞİŞTİRİLDİ
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
