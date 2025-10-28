@@ -16,7 +16,7 @@
     <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="EPPlus" Version="5.8.12" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.0" />
-
+    
     <!-- ✅ .NET 8 UYUMLU VERSİYONLAR -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
@@ -27,12 +27,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-
+    
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-
-    <!-- ✅ POSTGRESQL -->
-    <PackageReference Include="Npgsql" Version="8.0.0" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
+    
+    <!-- ✅ POSTGRESQL - GÜVENLİ VERSİYON -->
+    <PackageReference Include="Npgsql" Version="7.0.6" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.6" />
   </ItemGroup>
 
 </Project>
