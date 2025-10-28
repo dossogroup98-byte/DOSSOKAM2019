@@ -1,0 +1,201 @@
+@model MakineSaat
+@{
+    ViewData["Title"] = "Yeni Makine Saati Kaydı";
+}
+
+<div class="container-fluid">
+    <!-- DATABASE SWITCHER - YENİ EKLENDİ -->
+    <div class="card mb-3">
+        <div class="card-body py-2">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-2 mb-md-0">
+                    <small class="text-muted">🗃️ Aktif Veritabanı:</small>
+                    <strong class="text-primary">@(ViewBag.SelectedDatabase == "postgresql" ? "PostgreSQL" : "SQL Server")</strong>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <form method="post" action="@Url.Action("SwitchDatabase", "MakineSaat")" class="d-inline">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="submit" name="database" value="sqlserver"
+                                    class="btn @(ViewBag.SelectedDatabase == "sqlserver" ? "btn-primary" : "btn-outline-primary")">
+                                📊 SQL Server
+                            </button>
+                            <button type="submit" name="database" value="postgresql"
+                                    class="btn @(ViewBag.SelectedDatabase == "postgresql" ? "btn-success" : "btn-outline-success")">
+                                🐘 PostgreSQL
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">🏭 Yeni Makine Saati Kaydı</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create">
+                        <input type="hidden" name="database" value="@ViewBag.SelectedDatabase" />
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="SiparisNo" class="form-label">📋 Sipariş No *</label>
+                                    <input asp-for="SiparisNo" class="form-control" required
+                                           placeholder="Sipariş numarasını giriniz" />
+                                    <span asp-validation-for="SiparisNo" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="UrunAdi" class="form-label">🏷️ Ürün Adı *</label>
+                                    <input asp-for="UrunAdi" class="form-control" required
+                                           placeholder="Ürün adını giriniz" />
+                                    <span asp-validation-for="UrunAdi" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label asp-for="KalanSaat" class="form-label">⏱️ Kalan Saat *</label>
+                                    <input asp-for="KalanSaat" type="number" step="0.1" class="form-control" required
+                                           placeholder="Kalan saat giriniz" min="0" />
+                                    <span asp-validation-for="KalanSaat" class="text-danger"></span>
+                                    <small class="text-muted">Toplam kalan çalışma saati</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label asp-for="SiparisMiktar" class="form-label">📦 Sipariş Miktarı *</label>
+                                    <input asp-for="SiparisMiktar" type="number" class="form-control" required
+                                           placeholder="Sipariş miktarı giriniz" min="1" />
+                                    <span asp-validation-for="SiparisMiktar" class="text-danger"></span>
+                                    <small class="text-muted">Toplam üretim miktarı</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label asp-for="BaslamaTarihi" class="form-label">⏰ Başlama Tarihi</label>
+                                    <input asp-for="BaslamaTarihi" type="datetime-local" class="form-control" />
+                                    <small class="text-muted">Boş bırakılırsa şu anki zaman ayarlanır</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ✅ BİTİŞ TARİHİ EKLENDİ -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="BitisTarihi" class="form-label">⏹️ Bitiş Tarihi</label>
+                                    <input asp-for="BitisTarihi" type="datetime-local" class="form-control" />
+                                    <small class="text-muted">Tahmini bitiş tarihi</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">📅 Kayıt Tarihi</label>
+                                    <input type="text" class="form-control" value="@DateTime.Now.ToString("dd.MM.yyyy HH:mm")" disabled />
+                                    <small class="text-muted">Otomatik olarak ayarlanır</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ✅ DOKUMACI COMBOBOX'LARI EKLENDİ -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">👨‍🏭 Dokumacı 1</label>
+                                    <select asp-for="Dokumaci1ID" class="form-select">
+                                        <option value="">-- Dokumacı Seçin --</option>
+                                        @if (ViewBag.Dokumacilar != null)
+                                        {
+                                            @foreach (var dokumaci in ViewBag.Dokumacilar as List<Dokumaci>)
+                                            {
+                                                <option value="@dokumaci.DokumaciID">@dokumaci.DokumaciAdi</option>
+                                            }
+                                        }
+                                    </select>
+                                    <small class="text-muted">Birinci dokumacıyı seçin</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">👨‍🏭 Dokumacı 2</label>
+                                    <select asp-for="Dokumaci2ID" class="form-select">
+                                        <option value="">-- Dokumacı Seçin --</option>
+                                        @if (ViewBag.Dokumacilar != null)
+                                        {
+                                            @foreach (var dokumaci in ViewBag.Dokumacilar as List<Dokumaci>)
+                                            {
+                                                <option value="@dokumaci.DokumaciID">@dokumaci.DokumaciAdi</option>
+                                            }
+                                        }
+                                    </select>
+                                    <small class="text-muted">İkinci dokumacıyı seçin (opsiyonel)</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Aciklama" class="form-label">📝 Açıklama</label>
+                            <textarea asp-for="Aciklama" class="form-control" rows="3"
+                                      placeholder="Makine saati ile ilgili ek açıklamalar..."></textarea>
+                        </div>
+
+                        @if (ViewData.ModelState.ErrorCount > 0)
+                        {
+                            <div class="alert alert-danger">
+                                <h6>❌ Formda hatalar var:</h6>
+                                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                {
+                                    <div>• @error.ErrorMessage</div>
+                                }
+                            </div>
+                        }
+
+                        <div class="alert alert-info">
+                            <h6>ℹ️ Makine Saati Özellikleri:</h6>
+                            <p class="mb-0">
+                                • <strong>Geçen Süre</strong> otomatik olarak hesaplanacaktır<br>
+                                • Tamamlanınca <strong>Ekleme'ye otomatik geçiş</strong> yapılır
+                            </p>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-check-lg"></i> 💾 Kaydet
+                                </button>
+                                <a href="@Url.Action("Index", new { database = ViewBag.SelectedDatabase })" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left"></i> ← Listeye Dön
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Başlama tarihini varsayılan olarak şu anki zamanı ayarla
+        document.addEventListener('DOMContentLoaded', function() {
+            const baslamaTarihiInput = document.getElementById('BaslamaTarihi');
+            if (baslamaTarihiInput && !baslamaTarihiInput.value) {
+                const now = new Date();
+                // datetime-local formatı: YYYY-MM-DDTHH:MM
+                const formatted = now.toISOString().slice(0, 16);
+                baslamaTarihiInput.value = formatted;
+            }
+        });
+    </script>
+}

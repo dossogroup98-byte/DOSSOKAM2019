@@ -1,0 +1,105 @@
+@model Dokumaci
+@{
+    ViewData["Title"] = "Yeni Dokumacı Ekle";
+}
+
+<div class="container-fluid">
+    <!-- DATABASE SWITCHER - YENİ EKLENDİ -->
+    <div class="card mb-3">
+        <div class="card-body py-2">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-2 mb-md-0">
+                    <small class="text-muted">🗃️ Aktif Veritabanı:</small>
+                    <strong class="text-primary">@(ViewBag.SelectedDatabase == "postgresql" ? "PostgreSQL" : "SQL Server")</strong>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <form method="post" action="@Url.Action("SwitchDatabase", "Dokumaci")" class="d-inline">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="submit" name="database" value="sqlserver"
+                                    class="btn @(ViewBag.SelectedDatabase == "sqlserver" ? "btn-primary" : "btn-outline-primary")">
+                                📊 SQL Server
+                            </button>
+                            <button type="submit" name="database" value="postgresql"
+                                    class="btn @(ViewBag.SelectedDatabase == "postgresql" ? "btn-success" : "btn-outline-success")">
+                                🐘 PostgreSQL
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">👨‍🏭 Yeni Dokumacı Ekle</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create">
+                        <input type="hidden" name="database" value="@ViewBag.SelectedDatabase" />
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="DokumaciAdi" class="form-label">👤 Dokumacı Adı *</label>
+                                    <input asp-for="DokumaciAdi" class="form-control" required
+                                           placeholder="Dokumacı adını giriniz" />
+                                    <span asp-validation-for="DokumaciAdi" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Telefon" class="form-label">📞 Telefon</label>
+                                    <input asp-for="Telefon" class="form-control"
+                                           placeholder="Telefon numarası giriniz" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Adres" class="form-label">🏠 Adres</label>
+                            <textarea asp-for="Adres" class="form-control" rows="3"
+                                      placeholder="Adres bilgilerini giriniz"></textarea>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <div class="form-check form-switch">
+                                <input asp-for="Aktif" class="form-check-input" type="checkbox" checked />
+                                <label asp-for="Aktif" class="form-check-label">✅ Aktif</label>
+                            </div>
+                            <small class="text-muted">Pasif yapılan dokumacılar listede görünmez</small>
+                        </div>
+
+                        @if (ViewData.ModelState.ErrorCount > 0)
+                        {
+                            <div class="alert alert-danger">
+                                <h6>❌ Formda hatalar var:</h6>
+                                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                {
+                                    <div>• @error.ErrorMessage</div>
+                                }
+                            </div>
+                        }
+
+                        <div class="form-group">
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-check-lg"></i> 💾 Kaydet
+                                </button>
+                                <a href="@Url.Action("Index", new { database = ViewBag.SelectedDatabase })" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left"></i> ← Listeye Dön
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

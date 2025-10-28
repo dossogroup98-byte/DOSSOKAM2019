@@ -1,0 +1,76 @@
+@{
+    ViewData["Title"] = "Giriş Yap";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">🔐 Sistem Girişi</h4>
+            </div>
+            <div class="card-body">
+                <!-- Database Seçimi -->
+                <div class="mb-3">
+                    <label class="form-label">Veritabanı Seçin:</label>
+                    <div class="btn-group w-100" role="group">
+                        <button type="button" class="btn btn-outline-primary active" id="sqlserverBtn">
+                            📊 SQL Server
+                        </button>
+                        <button type="button" class="btn btn-outline-success" id="postgresqlBtn">
+                            🐘 PostgreSQL
+                        </button>
+                    </div>
+                    <input type="hidden" id="database" name="database" value="sqlserver">
+                </div>
+
+                <form method="post">
+                    <input type="hidden" id="databaseInput" name="database" value="sqlserver">
+
+                    <div class="mb-3">
+                        <label for="kullaniciAdi" class="form-label">Kullanıcı Adı</label>
+                        <input type="text" class="form-control" id="kullaniciAdi" name="kullaniciAdi" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="sifre" class="form-label">Şifre</label>
+                        <input type="password" class="form-control" id="sifre" name="sifre" required>
+                    </div>
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger">@ViewBag.Error</div>
+                    }
+
+                    <button type="submit" class="btn btn-primary w-100">Giriş Yap</button>
+                </form>
+
+                <div class="mt-3 text-center">
+                    <small class="text-muted">
+                        Demo: admin / 1234 (Her iki veritabanı için çalışır)
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('sqlserverBtn').addEventListener('click', function() {
+            setActiveDatabase('sqlserver', 'btn-outline-primary', 'btn-primary');
+        });
+
+        document.getElementById('postgresqlBtn').addEventListener('click', function() {
+            setActiveDatabase('postgresql', 'btn-outline-success', 'btn-success');
+        });
+
+        function setActiveDatabase(db, inactiveClass, activeClass) {
+            // Buton stillerini güncelle
+            document.getElementById('sqlserverBtn').className = 'btn ' + (db === 'sqlserver' ? activeClass : inactiveClass);
+            document.getElementById('postgresqlBtn').className = 'btn ' + (db === 'postgresql' ? activeClass : inactiveClass);
+
+            // Hidden input'u güncelle
+            document.getElementById('databaseInput').value = db;
+        }
+    </script>
+}

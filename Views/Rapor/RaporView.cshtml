@@ -1,0 +1,199 @@
+@model RaporViewModel
+@{
+    ViewData["Title"] = $"{Model.RaporTipi} Rapor";
+}
+
+<div class="container-fluid">
+    <!-- DATABASE SWITCHER - YENİ EKLENDİ -->
+    <div class="card mb-3">
+        <div class="card-body py-2">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-2 mb-md-0">
+                    <small class="text-muted">🗃️ Aktif Veritabanı:</small>
+                    <strong class="text-primary">@(ViewBag.SelectedDatabase == "postgresql" ? "PostgreSQL" : "SQL Server")</strong>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <form method="post" action="@Url.Action("SwitchDatabase", "Rapor")" class="d-inline">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="submit" name="database" value="sqlserver" 
+                                    class="btn @(ViewBag.SelectedDatabase == "sqlserver" ? "btn-primary" : "btn-outline-primary")">
+                                📊 SQL Server
+                            </button>
+                            <button type="submit" name="database" value="postgresql" 
+                                    class="btn @(ViewBag.SelectedDatabase == "postgresql" ? "btn-success" : "btn-outline-success")">
+                                🐘 PostgreSQL
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>📈 @Model.RaporTipi Üretim Raporu</h2>
+                <a href="@Url.Action("ExcelAktar", "Rapor", new { 
+                    raporTipi = Model.RaporTipi, 
+                    baslangic = Model.BaslangicTarihi, 
+                    bitis = Model.BitisTarihi,
+                    database = ViewBag.SelectedDatabase
+                })" class="btn btn-success">
+                    📊 Excel'e Aktar
+                </a>
+            </div>
+            <div class="alert alert-info">
+                <strong>📅 Tarih Aralığı:</strong> @Model.BaslangicTarihi.ToString("dd.MM.yyyy") - @Model.BitisTarihi.ToString("dd.MM.yyyy") |
+                <strong>⏰ Oluşturulma:</strong> @Model.OlusturmaTarihi.ToString("dd.MM.yyyy HH:mm") |
+                <strong>🗃️ Veritabanı:</strong> @(ViewBag.SelectedDatabase == "postgresql" ? "PostgreSQL" : "SQL Server")
+            </div>
+        </div>
+    </div>
+
+    <!-- Makine Saat Raporu -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">🏭 Makine Saat Raporu</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.MakineSaatRapor.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Ürün Adı</th>
+                                        <th>✅ Tamamlanan</th>
+                                        <th>🔄 Devam Eden</th>
+                                        <th>📊 Toplam</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.MakineSaatRapor)
+                                    {
+                                        <tr>
+                                            <td><strong>@item.UrunAdi</strong></td>
+                                            <td><span class="badge bg-success">@item.Tamamlanan</span></td>
+                                            <td><span class="badge bg-warning">@item.DevamEden</span></td>
+                                            <td><span class="badge bg-primary">@item.Toplam</span></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning text-center">
+                            <h6>📝 Bu tarih aralığında Makine Saat kaydı bulunmamaktadır.</h6>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ekleme Raporu -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0">🔧 Ekleme Raporu</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.EklemeRapor.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Ürün Adı</th>
+                                        <th>✅ Tamamlanan</th>
+                                        <th>🔄 Devam Eden</th>
+                                        <th>📊 Toplam</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.EklemeRapor)
+                                    {
+                                        <tr>
+                                            <td><strong>@item.UrunAdi</strong></td>
+                                            <td><span class="badge bg-success">@item.Tamamlanan</span></td>
+                                            <td><span class="badge bg-warning">@item.DevamEden</span></td>
+                                            <td><span class="badge bg-primary">@item.Toplam</span></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning text-center">
+                            <h6>📝 Bu tarih aralığında Ekleme kaydı bulunmamaktadır.</h6>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dazmal Raporu -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">⚡ Dazmal Raporu</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.DazmalRapor.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Ürün Adı</th>
+                                        <th>✅ Tamamlanan</th>
+                                        <th>🔄 Devam Eden</th>
+                                        <th>📊 Toplam</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.DazmalRapor)
+                                    {
+                                        <tr>
+                                            <td><strong>@item.UrunAdi</strong></td>
+                                            <td><span class="badge bg-success">@item.Tamamlanan</span></td>
+                                            <td><span class="badge bg-warning">@item.DevamEden</span></td>
+                                            <td><span class="badge bg-primary">@item.Toplam</span></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning text-center">
+                            <h6>📝 Bu tarih aralığında Dazmal kaydı bulunmamaktadır.</h6>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Diğer bölümler için aynı şablon eklenebilir -->
+    <!-- Kesme, Paketleme, Hazır Dokuma, Hazır Matbaa -->
+
+    <div class="row mt-4">
+        <div class="col-12 text-center">
+            <a href="@Url.Action("Index", "Rapor", new { database = ViewBag.SelectedDatabase })" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> ← Rapor Sayfasına Dön
+            </a>
+        </div>
+    </div>
+</div>
