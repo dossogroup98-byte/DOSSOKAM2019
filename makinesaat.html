@@ -1,0 +1,562 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#3498db">
+
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#3498db">
+
+    <title>DOSSOKAM - Üretim Takip</title>
+    <style>
+        /* 📱 MOBİL ÖNCELİKLİ STİLLER */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        /* 📱 HEADER */
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+            .header h1 {
+                font-size: 1.4em;
+                margin-bottom: 5px;
+            }
+
+            .header p {
+                font-size: 0.9em;
+                opacity: 0.8;
+            }
+
+        /* 📱 NAVBAR - MOBİL ÖNCELİKLİ */
+        .nav {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .nav-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 8px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 12px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60px;
+        }
+
+            .nav-btn:hover {
+                background: #2980b9;
+            }
+
+        /* 📱 HIZLI İSTATİSTİKLER */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2c3e50;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        /* 📱 TABLOLAR */
+        .table-container {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            overflow-x: auto;
+        }
+
+        /* 📝 FORM STİLLERİ */
+        .form-container {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+            .form-group label {
+                font-weight: bold;
+                margin-bottom: 5px;
+                font-size: 12px;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                font-size: 12px;
+            }
+
+            .form-group textarea {
+                min-height: 60px;
+                resize: vertical;
+            }
+
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            font-size: 11px;
+        }
+
+        .completed {
+            opacity: 0.7;
+            background: #f8f9fa !important;
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        th, td {
+            padding: 10px 8px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+            white-space: nowrap;
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* 🎨 RENK KODLU BÖLÜM STİLLERİ */
+        .bolum-makinesaat {
+            background: #ffebee !important; /* 🔴 Kırmızı - SICAK */
+            border-left: 4px solid #e74c3c;
+        }
+
+        .bolum-ekleme {
+            background: #fff3e0 !important; /* 🟠 Turuncu - Isınıyor */
+            border-left: 4px solid #f39c12;
+        }
+
+        .bolum-dazmal {
+            background: #fffde7 !important; /* 🟡 Sarı - Orta seviye */
+            border-left: 4px solid #f1c40f;
+        }
+
+        .bolum-kesme {
+            background: #e3f2fd !important; /* 🔵 Mavi - Soğuma */
+            border-left: 4px solid #3498db;
+        }
+
+        .bolum-paketleme {
+            background: #e0f2f1 !important; /* 🟣 Turkuaz - Bitime yakın */
+            border-left: 4px solid #1abc9c;
+        }
+
+        .bolum-hazirdokuma {
+            background: #e8f5e8 !important; /* 🟢 Yeşil - Tamamlandı */
+            border-left: 4px solid #27ae60;
+        }
+
+        .bolum-hazirmatbaa {
+            background: #f0e6ff !important; /* 🔶 Mor - Matbaa */
+            border-left: 4px solid #9b59b6;
+        }
+
+        /* ⏱️ SÜRE RENK KODLARI */
+        .sure-normal {
+            color: #27ae60 !important; /* 🟢 0-2 saat */
+            font-weight: bold;
+        }
+
+        .sure-uzun {
+            color: #f39c12 !important; /* 🟡 2-8 saat */
+            font-weight: bold;
+        }
+
+        .sure-cok-uzun {
+            color: #e74c3c !important; /* 🔴 8+ saat */
+            font-weight: bold;
+        }
+
+        /* 🏷️ DURUM BADGELERİ */
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .status-devam {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-tamam {
+            background: #4caf50;
+            color: white;
+        }
+
+        /* 📱 KÜÇÜK EKRANLAR */
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+
+            .nav {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nav-btn {
+                padding: 10px 6px;
+                font-size: 11px;
+                min-height: 50px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 12px;
+            }
+
+                .header h1 {
+                    font-size: 1.2em;
+                }
+
+            th, td {
+                padding: 8px 6px;
+                font-size: 11px;
+            }
+        }
+
+        /* 📱 YATAY EKRAN */
+        @media (min-width: 768px) {
+            .nav {
+                grid-template-columns: repeat(6, 1fr);
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* 🔄 YÜKLEME ANİMASYONU */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ Makine Saat Yönetimi</h1>
+            <p>Makine saat kayıtlarını yönetin</p>
+        </div>
+
+        <div class="nav">
+            <a href="/dashboard" class="nav-btn">📊<br>Dashboard</a>
+            <a href="/makinesaat" class="nav-btn">🔴<br>Makine</a>
+            <a href="/ekleme" class="nav-btn">🟠<br>Ekleme</a>
+            <a href="/dazmal" class="nav-btn">🟡<br>Dazmal</a>
+            <a href="/kesme" class="nav-btn">🔵<br>Kesme</a>
+            <a href="/paketleme" class="nav-btn">🟣<br>Paketleme</a>
+            <a href="/hazirdokuma" class="nav-btn">🟢<br>HazırDokuma</a>
+            <a href="/hazirmatbaa" class="nav-btn">🔶<br>HazırMatbaa</a>
+            <a href="/excel" class="nav-btn">📋<br>ExcelPaylas</a>
+        </div>
+
+        <div class="form-container">
+            <h2>Yeni Makine Saat Kaydı</h2>
+            <form id="makineForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Makine No:</label>
+                        <select name="makine_no" required>
+                            <option value="">Seçiniz</option>
+                            <option value="Makine1">Makine1</option>
+                            <option value="Makine2">Makine2</option>
+                            <option value="Makine3">Makine3</option>
+                            <option value="Makine4">Makine4</option>
+                            <option value="Makine5">Makine5</option>
+                            <option value="Makine6">Makine6</option>
+                            <option value="Makine7">Makine7</option>
+                            <option value="Makine8">Makine8</option>
+                            <option value="Makine9">Makine9</option>
+                            <option value="Makine10">Makine10</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Sipariş No:</label>
+                        <input type="text" name="siparis_no" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Ürün Adı:</label>
+                        <input type="text" name="urun_adi" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Kalan Saat:</label>
+                        <input type="number" name="kalan_saat" value="50" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Sipariş Miktarı:</label>
+                        <input type="number" name="siparis_miktar" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Dokumacı 1 ID:</label>
+                        <input type="text" name="dokumaci1_id">
+                    </div>
+                    <div class="form-group">
+                        <label>Dokumacı 2 ID:</label>
+                        <input type="text" name="dokumaci2_id">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Açıklama:</label>
+                    <textarea name="aciklama"></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Makine Kaydı Ekle</button>
+            </form>
+        </div>
+
+        <div class="table-container">
+            <h2>Makine Saat Kayıtları</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Makine No</th>
+                        <th>Siparis No</th>
+                        <th>Ürün Adı</th>
+                        <th>Kalan Saat</th>
+                        <th>Miktar</th>
+                        <th>Dokumacılar</th>
+                        <th>Başlama</th>
+                        <th>Geçen Süre</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody id="machineTable">
+                    <tr><td colspan="10">Yükleniyor...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Makine ekleme formu
+        document.getElementById('makineForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            const machineData = {
+                makine_no: formData.get('makine_no'),
+                siparis_no: formData.get('siparis_no'),
+                urun_adi: formData.get('urun_adi'),
+                kalan_saat: parseInt(formData.get('kalan_saat')),
+                siparis_miktar: parseInt(formData.get('siparis_miktar')),
+                aciklama: formData.get('aciklama'),
+                dokumaci1_id: formData.get('dokumaci1_id'),
+                dokumaci2_id: formData.get('dokumaci2_id'),
+                baslama_tarihi: new Date().toISOString()
+            };
+
+            try {
+                const response = await fetch('/api/makinesaat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(machineData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('✅ ' + result.message);
+                    this.reset();
+                    loadMachines();
+                } else {
+                    alert('❌ ' + result.message);
+                }
+            } catch (error) {
+                alert('❌ Bağlantı hatası: ' + error.message);
+            }
+        });
+
+        // Makine listesini yükle
+        async function loadMachines() {
+            try {
+                const response = await fetch('/api/makinesaat');
+                const machines = await response.json();
+
+                let tableHTML = '';
+                machines.forEach(machine => {
+                    const isCompleted = machine.tamamlandi;
+                    tableHTML += `
+                                <tr class="${isCompleted ? 'completed' : ''}">
+                                    <td>${machine.makine_no}</td>
+                                    <td>${machine.siparis_no}</td>
+                                    <td>${machine.urun_adi}</td>
+                                    <td>${machine.kalan_saat} saat</td>
+                                    <td>${machine.siparis_miktar}</td>
+                                    <td>${machine.dokumaci1_id || ''} ${machine.dokumaci2_id ? '/ ' + machine.dokumaci2_id : ''}</td>
+                                    <td>${new Date(machine.baslama_tarihi).toLocaleDateString('tr-TR')}</td>
+                                    <td>${machine.gecen_sure || 0} saat</td>
+                                    <td>${isCompleted ? '✅ Tamamlandı' : '🟢 Devam Ediyor'}</td>
+                                    <td>
+                                        ${!isCompleted ?
+                            `<button class="btn btn-success" onclick="completeMachine('${machine.makinesaat_id}')">Complete</button>` :
+                            ''
+                        }
+                                        <button class="btn btn-danger" onclick="deleteMachine('${machine.makinesaat_id}')">Sil</button>
+                                    </td>
+                                </tr>
+                            `;
+                });
+
+                document.getElementById('machineTable').innerHTML = tableHTML || '<tr><td colspan="10">Kayıt bulunamadı</td></tr>';
+            } catch (error) {
+                console.error('Makine yükleme hatası:', error);
+            }
+        }
+
+        async function completeMachine(id) {
+            if (confirm('Bu makineyi tamamlamak istediğinizden emin misiniz?')) {
+                try {
+                    const response = await fetch('/api/makinesaat/' + id + '/complete', { method: 'POST' });
+                    const result = await response.json();
+                    alert(result.message);
+                    loadMachines();
+                } catch (error) {
+                    alert('Complete hatası: ' + error);
+                }
+            }
+        }
+
+        async function deleteMachine(id) {
+            if (confirm('Bu makineyi silmek istediğinizden emin misiniz?')) {
+                try {
+                    const response = await fetch('/api/makinesaat/' + id, { method: 'DELETE' });
+                    const result = await response.json();
+                    alert(result.message);
+                    loadMachines();
+                } catch (error) {
+                    alert('Silme hatası: ' + error);
+                }
+            }
+        }
+
+        // Sayfa yüklendiğinde makine listesini getir
+        loadMachines();
+
+        // Aktif sayfayı vurgula
+        document.addEventListener('DOMContentLoaded', function () {
+            const currentPath = window.location.pathname;
+            const navButtons = document.querySelectorAll('.nav-btn');
+
+            navButtons.forEach(btn => {
+                if (btn.getAttribute('href') === currentPath) {
+                    btn.classList.add('active');
+                }
+            });
+        });
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <title>Excel İndir</title>
+    <style>
+        .btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            display: block;
+            width: 100%;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <button class="btn" onclick="exportToExcel()">
+        📥 EXCEL VERİLERİ İNDİR
+    </button>
+
+    <script>
+        async function exportToExcel() {
+            try {
+                const response = await fetch('/api/excel-export-real');
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'DOSSOKAM_URETIM.csv';  // CSV olarak değiştir
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+
+                    setTimeout(() => {
+                        alert('✅ Excel dosyası indirildi! Excel\'de açıp "Veri > Metni Sütunlara Dönüştür" yapın.');
+                    }, 1000);
+
+                } else {
+                    alert('❌ Excel oluşturma hatası!');
+                }
+
+            } catch (error) {
+                alert('❌ Hata: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

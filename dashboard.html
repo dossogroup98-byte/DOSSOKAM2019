@@ -1,0 +1,666 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOSSOKAM - Üretim Takip</title>
+    <style>
+        /* 📱 MOBİL ÖNCELİKLİ STİLLER */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        /* 📱 HEADER */
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+            .header h1 {
+                font-size: 1.4em;
+                margin-bottom: 5px;
+            }
+
+            .header p {
+                font-size: 0.9em;
+                opacity: 0.8;
+            }
+
+        /* 📱 NAVBAR - MOBİL ÖNCELİKLİ */
+        .nav {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .nav-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 8px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 12px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60px;
+        }
+
+            .nav-btn:hover {
+                background: #2980b9;
+            }
+
+        /* 📱 HIZLI İSTATİSTİKLER */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2c3e50;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        /* 📱 TABLOLAR */
+        .table-container {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        th, td {
+            padding: 10px 8px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+            white-space: nowrap;
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* 🎨 RENK KODLU BÖLÜM STİLLERİ */
+        .bolum-makinesaat {
+            background: #ffebee !important;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .bolum-ekleme {
+            background: #fff3e0 !important;
+            border-left: 4px solid #f39c12;
+        }
+
+        .bolum-dazmal {
+            background: #fffde7 !important;
+            border-left: 4px solid #f1c40f;
+        }
+
+        .bolum-kesme {
+            background: #e3f2fd !important;
+            border-left: 4px solid #3498db;
+        }
+
+        .bolum-paketleme {
+            background: #e0f2f1 !important;
+            border-left: 4px solid #1abc9c;
+        }
+
+        .bolum-hazirdokuma {
+            background: #e8f5e8 !important;
+            border-left: 4px solid #27ae60;
+        }
+
+        .bolum-hazirmatbaa {
+            background: #f0e6ff !important;
+            border-left: 4px solid #9b59b6;
+        }
+
+        /* ⏱️ SÜRE RENK KODLARI */
+        .sure-normal {
+            color: #27ae60 !important;
+            font-weight: bold;
+        }
+
+        .sure-uzun {
+            color: #f39c12 !important;
+            font-weight: bold;
+        }
+
+        .sure-cok-uzun {
+            color: #e74c3c !important;
+            font-weight: bold;
+        }
+
+        /* 🏷️ DURUM BADGELERİ */
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .status-devam {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-tamam {
+            background: #4caf50;
+            color: white;
+        }
+
+        /* 📱 KÜÇÜK EKRANLAR */
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+
+            .nav {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nav-btn {
+                padding: 10px 6px;
+                font-size: 11px;
+                min-height: 50px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 12px;
+            }
+
+                .header h1 {
+                    font-size: 1.2em;
+                }
+
+            th, td {
+                padding: 8px 6px;
+                font-size: 11px;
+            }
+        }
+
+        /* 📱 YATAY EKRAN */
+        @media (min-width: 768px) {
+            .nav {
+                grid-template-columns: repeat(6, 1fr);
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* 🔄 YÜKLEME ANİMASYONU */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>🏭 DOSSOKAM - Üretim Takip</h1>
+            <p>Renk Kodlu Akış Sistemi</p>
+        </div>
+
+        <!-- HIZLI NAVİGASYON -->
+        <div class="nav">
+            <a href="/dashboard" class="nav-btn">📊<br>Dashboard</a>
+            <a href="/makinesaat" class="nav-btn">🔴<br>Makine</a>
+            <a href="/ekleme" class="nav-btn">🟠<br>Ekleme</a>
+            <a href="/dazmal" class="nav-btn">🟡<br>Dazmal</a>
+            <a href="/kesme" class="nav-btn">🔵<br>Kesme</a>
+            <a href="/paketleme" class="nav-btn">🟣<br>Paketleme</a>
+            <a href="/hazirdokuma" class="nav-btn">🟢<br>HazırDokuma</a>
+            <a href="/hazirmatbaa" class="nav-btn">🔶<br>HazırMatbaa</a>
+            <a href="/excel" class="nav-btn">📋<br>ExcelPaylas</a>
+        </div>
+
+        <!-- RENK AÇIKLAMALARI -->
+        <div class="table-container">
+            <h3 style="margin-bottom: 10px;">🎨 Renk Sistemi Açıklaması</h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 11px;">
+                <div><span style="color: #e74c3c">🔴 MakineSaat</span> - Sıcak (Başlangıç)</div>
+                <div><span style="color: #f39c12">🟠 Ekleme</span> - Isınıyor</div>
+                <div><span style="color: #f1c40f">🟡 Dazmal</span> - Orta Seviye</div>
+                <div><span style="color: #3498db">🔵 Kesme</span> - Soğuma</div>
+                <div><span style="color: #1abc9c">🟣 Paketleme</span> - Bitime Yakın</div>
+                <div><span style="color: #27ae60">🟢 HazırDokuma</span> - Tamamlandı</div>
+                <div><span style="color: #9b59b6">🔶 HazırMatbaa</span> - Matbaa İşlemleri</div>
+            </div>
+        </div>
+
+        <!-- HIZLI İSTATİSTİKLER -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-number" id="aktifMakine">0</span>
+                <span class="stat-label">Aktif Makine</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="tamamlananIs">0</span>
+                <span class="stat-label">Tamamlanan İş</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="toplamSiparis">0</span>
+                <span class="stat-label">Toplam Sipariş</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="aktifUrun">0</span>
+                <span class="stat-label">Aktif Ürün</span>
+            </div>
+        </div>
+
+        <!-- ÜRÜN AKIŞ TABLOSU -->
+        <!--<div class="table-container">
+            <h2 style="margin-bottom: 15px; font-size: 1.1em;">📈 Aktif Ürün Akışı</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sipariş No</th>
+                        <th>Ürün</th>
+                        <th>Bölüm</th>
+                        <th>Durum</th>
+                        <th>Geçen Süre</th>
+                        <th>Toplam Süre</th>
+                    </tr>
+                </thead>
+                <tbody id="urunAkisTable">
+                    <tr><td colspan="6" style="text-align: center;" class="pulse">Yükleniyor...</td></tr>
+                </tbody>
+            </table>
+        </div>-->
+
+        <!-- MAKINE SAAT TABLOSU -->
+        <div class="table-container">
+            <h2 style="margin-bottom: 15px; font-size: 1.1em;">🔴 Makine Saat</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sipariş No</th>
+                        <th>Ürün</th>
+                        <th>Durum</th>
+                        <th>Geçen Süre</th>
+                    </tr>
+                </thead>
+                <tbody id="makinesaatTable">
+                    <tr><td colspan="4" style="text-align: center;">Yükleniyor...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- EKLEME TABLOSU -->
+        <div class="table-container">
+            <h2 style="margin-bottom: 15px; font-size: 1.1em;">🟠 Ekleme</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sipariş No</th>
+                        <th>Ürün</th>
+                        <th>Durum</th>
+                        <th>Geçen Süre</th>
+                    </tr>
+                </thead>
+                <tbody id="eklemeTable">
+                    <tr><td colspan="4" style="text-align: center;">Yükleniyor...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- KESME TABLOSU -->
+        <div class="table-container">
+            <h2 style="margin-bottom: 15px; font-size: 1.1em;">🔵 Kesme</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sipariş No</th>
+                        <th>Ürün</th>
+                        <th>Durum</th>
+                        <th>Geçen Süre</th>
+                    </tr>
+                </thead>
+                <tbody id="kesmeTable">
+                    <tr><td colspan="4" style="text-align: center;">Yükleniyor...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PAKETLEME TABLOSU -->
+        <div class="table-container">
+            <h2 style="margin-bottom: 15px; font-size: 1.1em;">🟣 Paketleme</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sipariş No</th>
+                        <th>Ürün</th>
+                        <th>Durum</th>
+                        <th>Geçen Süre</th>
+                    </tr>
+                </thead>
+                <tbody id="paketlemeTable">
+                    <tr><td colspan="4" style="text-align: center;">Yükleniyor...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- HAZIR DOKUMA TABLOSU -->
+        <div class="table-container">
+            <h2 style="margin-bottom: 15px; font-size: 1.1em;">🟢 Hazır Dokuma</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sipariş No</th>
+                        <th>Ürün</th>
+                        <th>Durum</th>
+                        <th>Geçen Süre</th>
+                    </tr>
+                </thead>
+                <tbody id="hazirdokumaTable">
+                    <tr><td colspan="4" style="text-align: center;">Yükleniyor...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- HAZIR MATBAA TABLOSU -->
+        <div class="table-container">
+            <h2 style="margin-bottom: 15px; font-size: 1.1em;">🔶 Hazır Matbaa</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sipariş No</th>
+                        <th>Ürün</th>
+                        <th>Durum</th>
+                        <th>Kayıt Tarihi</th>
+                    </tr>
+                </thead>
+                <tbody id="hazirmatbaaTable">
+                    <tr><td colspan="4" style="text-align: center;">Yükleniyor...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // 🎨 BÖLÜM RENK SINIFI DÖNÜŞÜMÜ
+        function getBolumClass(bolum) {
+            const bolumMap = {
+                'MakineSaat': 'bolum-makinesaat',
+                'Ekleme': 'bolum-ekleme',
+                'Dazmal': 'bolum-dazmal',
+                'Kesme': 'bolum-kesme',
+                'Paketleme': 'bolum-paketleme',
+                'HazırDokuma': 'bolum-hazirdokuma',
+                'HazırMatbaa': 'bolum-hazirmatbaa'
+            };
+            return bolumMap[bolum] || '';
+        }
+
+        // ⏱️ SÜRE RENK SINIFI DÖNÜŞÜMÜ
+        function getSureClass(sure) {
+            if (sure < 2) return 'sure-normal';
+            if (sure < 8) return 'sure-uzun';
+            return 'sure-cok-uzun';
+        }
+
+        // 📊 DASHBOARD İSTATİSTİKLERİNİ YÜKLE
+        async function loadDashboardData() {
+            try {
+                document.body.classList.add('loading');
+
+                // TEST VERİLERİ
+                const testData = {
+                    aktifMakine: 2,
+                    tamamlananIs: 3,
+                    toplamSiparis: 4,
+                    aktifUrun: 2,
+                    urunAkis: [
+                        {
+                            siparis_no: 'N 3000',
+                            urun_adi: 'ANTONIO',
+                            mevcut_bolum: 'MakineSaat',
+                            tamamlandi: false,
+                            gecen_sure: 6,
+                            toplam_sure: 13
+                        },
+                        {
+                            siparis_no: 'N 7000',
+                            urun_adi: 'SACO',
+                            mevcut_bolum: 'MakineSaat',
+                            tamamlandi: false,
+                            gecen_sure: 0,
+                            toplam_sure: 50
+                        }
+                    ]
+                };
+
+                // İstatistikleri güncelle
+                document.getElementById('aktifMakine').textContent = testData.aktifMakine;
+                document.getElementById('tamamlananIs').textContent = testData.tamamlananIs;
+                document.getElementById('toplamSiparis').textContent = testData.toplamSiparis;
+                document.getElementById('aktifUrun').textContent = testData.aktifUrun;
+
+                // Tabloyu güncelle
+                updateUrunAkisTable(testData.urunAkis);
+
+            } catch (error) {
+                console.error('Veri yükleme hatası:', error);
+                document.getElementById('aktifMakine').textContent = 2;
+                document.getElementById('tamamlananIs').textContent = 3;
+                document.getElementById('toplamSiparis').textContent = 4;
+                document.getElementById('aktifUrun').textContent = 2;
+
+                document.getElementById('urunAkisTable').innerHTML = `
+                        <tr class="bolum-makinesaat">
+                            <td><strong>N 3000</strong></td>
+                            <td>ANTONIO</td>
+                            <td><strong>MakineSaat</strong></td>
+                            <td><span class="status-badge status-devam">Devam</span></td>
+                            <td class="sure-uzun">6sa</td>
+                            <td class="sure-cok-uzun">13sa</td>
+                        </tr>
+                        <tr class="bolum-makinesaat">
+                            <td><strong>N 7000</strong></td>
+                            <td>SACO</td>
+                            <td><strong>MakineSaat</strong></td>
+                            <td><span class="status-badge status-devam">Devam</span></td>
+                            <td class="sure-normal">0sa</td>
+                            <td class="sure-cok-uzun">50sa</td>
+                        </tr>
+                    `;
+            } finally {
+                document.body.classList.remove('loading');
+            }
+        }
+
+        // 📋 ANA TABLOYU GÜNCELLE
+        function updateUrunAkisTable(urunAkis) {
+            let tableHTML = '';
+
+            if (!urunAkis || urunAkis.length === 0) {
+                tableHTML = '<tr><td colspan="6" style="text-align: center;">Aktif ürün bulunamadı</td></tr>';
+            } else {
+                urunAkis.forEach(urun => {
+                    const bolumClass = getBolumClass(urun.mevcut_bolum);
+                    const gecenSaat = urun.gecen_sure || 0;
+                    const toplamSaat = urun.toplam_sure || 0;
+
+                    const sureClass = getSureClass(gecenSaat);
+                    const toplamSureClass = getSureClass(toplamSaat);
+
+                    const statusClass = urun.tamamlandi ? 'status-tamam' : 'status-devam';
+                    const statusText = urun.tamamlandi ? 'Tamam' : 'Devam';
+
+                    tableHTML += `
+                            <tr class="${bolumClass}">
+                                <td><strong>${urun.siparis_no || 'N/A'}</strong></td>
+                                <td>${urun.urun_adi || 'N/A'}</td>
+                                <td><strong>${urun.mevcut_bolum || 'N/A'}</strong></td>
+                                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                                <td class="${sureClass}">${gecenSaat}sa</td>
+                                <td class="${toplamSureClass}">${toplamSaat}sa</td>
+                            </tr>
+                        `;
+                });
+            }
+
+            document.getElementById('urunAkisTable').innerHTML = tableHTML;
+        }
+
+        // 📊 TÜM BÖLÜMLERİ YÜKLE
+        async function loadAllSections() {
+            try {
+                // Test verileri - Tüm bölümler için
+                const testData = {
+                    makinesaat: [
+                        { siparis_no: 'N 3000', urun_adi: 'ANTONIO', durum: 'Devam', gecen_sure: 6 },
+                        { siparis_no: 'N 7000', urun_adi: 'SACO', durum: 'Devam', gecen_sure: 0 }
+                    ],
+                    ekleme: [
+                        { siparis_no: 'N 4000', urun_adi: 'MARCO', durum: 'Devam', gecen_sure: 2 }
+                    ],
+                    kesme: [
+                        { siparis_no: 'N 5000', urun_adi: 'LUIZ', durum: 'Devam', gecen_sure: 1 }
+                    ],
+                    paketleme: [
+                        { siparis_no: 'N 6000', urun_adi: 'CARLO', durum: 'Devam', gecen_sure: 3 }
+                    ],
+                    hazirdokuma: [
+                        { siparis_no: 'N 2000', urun_adi: 'FINITO', durum: 'Tamam', gecen_sure: 8 }
+                    ],
+                    hazirmatbaa: [
+                        { siparis_no: 'N 8000', urun_adi: 'PRINTMAX', durum: 'Devam', kayit_tarihi: '29.10.2025' }
+                    ]
+                };
+
+                // Her bölümün tablosunu güncelle
+                updateSectionTable('makinesaat', testData.makinesaat);
+                updateSectionTable('ekleme', testData.ekleme);
+                updateSectionTable('kesme', testData.kesme);
+                updateSectionTable('paketleme', testData.paketleme);
+                updateSectionTable('hazirdokuma', testData.hazirdokuma);
+                updateSectionTable('hazirmatbaa', testData.hazirmatbaa);
+
+            } catch (error) {
+                console.error('Bölüm yükleme hatası:', error);
+            }
+        }
+
+        // 📋 BÖLÜM TABLOSUNU GÜNCELLE
+        function updateSectionTable(section, data) {
+            const tableId = section + 'Table';
+            let tableHTML = '';
+
+            if (!data || data.length === 0) {
+                tableHTML = '<tr><td colspan="4" style="text-align: center;">Kayıt bulunamadı</td></tr>';
+            } else {
+                data.forEach(item => {
+                    const statusClass = item.durum === 'Tamam' ? 'status-tamam' : 'status-devam';
+
+                    if (section === 'hazirmatbaa') {
+                        tableHTML += `
+                                <tr class="bolum-${section}">
+                                    <td><strong>${item.siparis_no}</strong></td>
+                                    <td>${item.urun_adi}</td>
+                                    <td><span class="status-badge ${statusClass}">${item.durum}</span></td>
+                                    <td>${item.kayit_tarihi}</td>
+                                </tr>
+                            `;
+                    } else {
+                        tableHTML += `
+                                <tr class="bolum-${section}">
+                                    <td><strong>${item.siparis_no}</strong></td>
+                                    <td>${item.urun_adi}</td>
+                                    <td><span class="status-badge ${statusClass}">${item.durum}</span></td>
+                                    <td class="${getSureClass(item.gecen_sure)}">${item.gecen_sure}sa</td>
+                                </tr>
+                            `;
+                    }
+                });
+            }
+
+            document.getElementById(tableId).innerHTML = tableHTML;
+        }
+
+        // 📱 SAYFA YÜKLENDİĞİNDE
+        document.addEventListener('DOMContentLoaded', function () {
+            loadDashboardData();
+            loadAllSections();
+        });
+    </script>
+</body>
+</html>
