@@ -4,6 +4,10 @@ using OfficeOpenXml;
 using System.ComponentModel;
 using System.Text;
 
+// Render PORT desteği
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+
 // ✅ EPPLUS 8+ LİSANS AYARI - TAM NAMESPACE İLE
 OfficeOpenXml.ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
 
@@ -2097,4 +2101,5 @@ public class HazirMatbaa
     public DateTime kayit_tarihi { get; set; }
     public string? kaydeden_kullanici_id { get; set; }
     public bool tamamlandi { get; set; }
+
 }
