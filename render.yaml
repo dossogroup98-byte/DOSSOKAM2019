@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: dossokam-uretim
+    env: dotnet
+    plan: free
+    branch: main
+    buildCommand: ./build.sh
+    startCommand: cd output && ./DossokamUretim --urls http://0.0.0.0:$PORT
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
