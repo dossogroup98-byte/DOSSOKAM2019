@@ -1,11 +1,7 @@
 services:
   - type: web
     name: DOSSOKAM2019
-    runtime: dotnet
-    env: dotnet
+    env: docker
     plan: free
-    buildCommand: "dotnet publish -c Release -o output"
-    startCommand: "dotnet output/DOSSOKAM2019.dll"
-    envVars:
-      - key: ASPNETCORE_ENVIRONMENT
-        value: Production
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
