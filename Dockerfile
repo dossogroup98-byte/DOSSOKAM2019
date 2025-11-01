@@ -1,14 +1,23 @@
-# .NET 8 runtime + SDK
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-WORKDIR /app
-EXPOSE 8080
-
+# =========================
+# Build aşaması
+# =========================
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
-COPY . .
-RUN dotnet publish "DOSSOKAM2019.csproj" -c Release -o /app/publish
-
-FROM base AS final
 WORKDIR /app
-COPY --from=build /app/publish .
+
+# Proje dosyalarını kopyala ve restore et
+COPY *.csproj .
+RUN dotnet restore
+
+# Tüm kaynak dosyaları kopyala ve build et
+COPY . .
+RUN dotnet publish -c Release -o /out
+
+# =========================
+# Run aşaması
+# =========================
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /out .
+
+# Web uygulamasını başlat
 ENTRYPOINT ["dotnet", "DOSSOKAM2019.dll"]
