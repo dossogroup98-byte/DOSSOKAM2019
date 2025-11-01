@@ -1,7 +1,6 @@
 services:
   - type: web
-    name: DOSSOKAM2019
+    name: dossokam2019
     env: docker
     plan: free
-    dockerfilePath: ./Dockerfile
     autoDeploy: true
