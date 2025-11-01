@@ -1,10 +1,11 @@
 services:
   - type: web
-    name: dossokam2019
+    name: DOSSOKAM2019
+    runtime: dotnet
     env: dotnet
     plan: free
-    buildCommand: dotnet publish -c Release -o out
-    startCommand: dotnet out/DOSSOKAM2019.dll
+    buildCommand: "dotnet publish -c Release -o output"
+    startCommand: "dotnet output/DOSSOKAM2019.dll"
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
